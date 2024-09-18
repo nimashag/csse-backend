@@ -197,27 +197,27 @@ public class UserControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-//    @Test
-//    void deleteUser_shouldReturnNoContent_whenUserDeleted() {
-//        // Arrange
-//        when(userService.deleteUser("1")).thenReturn(true);
-//
-//        // Act
-//        ResponseEntity<Void> response = userController.deleteUser("1");
-//
-//        // Assert
-//        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-//    }
-//
-//    @Test
-//    void deleteUser_shouldReturnNotFound_whenUserDoesNotExist() {
-//        // Arrange
-//        when(userService.deleteUser("1")).thenReturn(false);
-//
-//        // Act
-//        ResponseEntity<Void> response = userController.deleteUser("1");
-//
-//        // Assert
-//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-//    }
+    @Test
+    void deleteUser_shouldReturnNoContent_whenUserDeleted() {
+        // Arrange
+        when(userService.deleteUser("1")).thenReturn(true);
+
+        // Act
+        ResponseEntity<Void> response = userController.deleteUser("1");
+
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    void deleteUser_shouldReturnNotFound_whenUserDoesNotExist() {
+        // Arrange
+        when(userService.deleteUser("1")).thenReturn(false);
+
+        // Act
+        ResponseEntity<Void> response = userController.deleteUser("1");
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 }
