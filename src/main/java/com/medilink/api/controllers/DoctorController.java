@@ -104,6 +104,34 @@ public class DoctorController {
         return ResponseEntity.noContent().build();
     }
 
+    // Assign a hospital to a doctor
+    @PostMapping("/{doctorId}/hospitals/{hospitalId}")
+    public ResponseEntity<Void> assignHospitalToDoctor(@PathVariable String doctorId, @PathVariable String hospitalId) {
+        logger.info("[DOCTORS][POST] Assigning hospital {} to doctor {}", hospitalId, doctorId);
+
+        try {
+            doctorService.addHospitalToDoctor(doctorId, hospitalId);
+            return ResponseEntity.ok().build(); // Return 200 OK on success
+        } catch (RuntimeException e) {
+            logger.warn("[DOCTORS][POST] Failed to assign hospital to doctor: {}", e.getMessage());
+            return ResponseEntity.notFound().build(); // Return 404 if doctor or hospital is not found
+        }
+    }
+
+    // Unassign a hospital from a doctor
+    @DeleteMapping("/{doctorId}/hospitals/{hospitalId}")
+    public ResponseEntity<Void> unassignHospitalFromDoctor(@PathVariable String doctorId, @PathVariable String hospitalId) {
+        logger.info("[DOCTORS][DELETE] Unassigning hospital {} from doctor {}", hospitalId, doctorId);
+
+        try {
+            doctorService.removeHospitalFromDoctor(doctorId, hospitalId);
+            return ResponseEntity.ok().build(); // Return 200 OK on success
+        } catch (RuntimeException e) {
+            logger.warn("[DOCTORS][DELETE] Failed to unassign hospital from doctor: {}", e.getMessage());
+            return ResponseEntity.notFound().build(); // Return 404 if doctor or hospital is not found
+        }
+    }
+
     // Get doctors by hospital ID
     @GetMapping("/hospital/{hospitalId}")
     public ResponseEntity<List<DoctorResponseDTO>> getDoctorsByHospital(@PathVariable String hospitalId) {

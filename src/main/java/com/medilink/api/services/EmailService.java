@@ -22,12 +22,20 @@ public class EmailService {
     @Value("${app.test.email}")
     private String testEmail;
 
+    @Value("${app.email.enabled}")
+    private boolean isEmailEnabled;
+
     @Autowired
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
     public void sendWelcomeEmail(String toEmail, String doctorName, String password) {
+        if (!isEmailEnabled) {
+            logger.warn("[EMAIL] Email service is disabled. Skipping email send.");
+            return; // Do not send the email if it's disabled in properties
+        }
+
         SimpleMailMessage message = new SimpleMailMessage();
 
         // If app is in testing mode, use the test email, otherwise use the provided email
