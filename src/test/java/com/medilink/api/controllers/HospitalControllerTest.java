@@ -38,11 +38,10 @@ public class HospitalControllerTest {
         requestDTO.setHospitalEmail("city@example.com");
         requestDTO.setArea("Downtown");
         requestDTO.setContactNumber("1234567890");
-        requestDTO.setNoDoctors(10);
         requestDTO.setHospitalType(HospitalType.PRIVATE_HOSPITAL);
 
-        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
-        HospitalResponseDTO responseDTO = new HospitalResponseDTO("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
+        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890",  HospitalType.PRIVATE_HOSPITAL);
+        HospitalResponseDTO responseDTO = new HospitalResponseDTO("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalService.saveHospital(any(Hospital.class))).thenReturn(hospital);
 
@@ -58,7 +57,7 @@ public class HospitalControllerTest {
     @Test
     void getAllHospitals_shouldReturnListOfHospitals() {
         // Arrange
-        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
+        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
         List<Hospital> hospitals = Collections.singletonList(hospital);
 
         when(hospitalService.getAllHospitals()).thenReturn(hospitals);
@@ -75,7 +74,7 @@ public class HospitalControllerTest {
     @Test
     void getHospitalById_shouldReturnHospital_whenExists() {
         // Arrange
-        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
+        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalService.getHospitalById("1")).thenReturn(hospital);
 
@@ -108,11 +107,10 @@ public class HospitalControllerTest {
         requestDTO.setHospitalEmail("updatedcity@example.com");
         requestDTO.setArea("Downtown");
         requestDTO.setContactNumber("1234567890");
-        requestDTO.setNoDoctors(15);
         requestDTO.setHospitalType(HospitalType.PRIVATE_HOSPITAL);
 
-        Hospital existingHospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
-        Hospital updatedHospital = new Hospital("1", "Updated City Hospital", "updatedcity@example.com", "Downtown", "1234567890", 15, HospitalType.PRIVATE_HOSPITAL);
+        Hospital existingHospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
+        Hospital updatedHospital = new Hospital("1", "Updated City Hospital", "updatedcity@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalService.updateHospital(eq("1"), any(Hospital.class))).thenReturn(updatedHospital);
 
@@ -133,7 +131,6 @@ public class HospitalControllerTest {
         requestDTO.setHospitalEmail("updatedcity@example.com");
         requestDTO.setArea("Downtown");
         requestDTO.setContactNumber("1234567890");
-        requestDTO.setNoDoctors(15);
         requestDTO.setHospitalType(HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalService.updateHospital(eq("1"), any(Hospital.class))).thenReturn(null);

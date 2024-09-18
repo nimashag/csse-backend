@@ -20,6 +20,5 @@ public class Hospital {
     private String hospitalEmail;
     private String area;
     private String contactNumber;
-    private int noDoctors;
     private HospitalType hospitalType;
 }

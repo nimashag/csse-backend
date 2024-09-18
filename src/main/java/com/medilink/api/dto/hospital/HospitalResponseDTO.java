@@ -14,6 +14,5 @@ public class HospitalResponseDTO {
     private String hospitalEmail;
     private String area;
     private String contactNumber;
-    private int noDoctors;
     private HospitalType hospitalType; // Include hospitalType in the response
 }

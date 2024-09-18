@@ -38,7 +38,6 @@ public class HospitalServiceTest {
         hospital.setHospitalEmail("city@example.com");
         hospital.setArea("Downtown");
         hospital.setContactNumber("1234567890");
-        hospital.setNoDoctors(10);
         hospital.setHospitalType(HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalRepository.save(hospital)).thenReturn(hospital);
@@ -55,8 +54,8 @@ public class HospitalServiceTest {
     @Test
     void getAllHospitals_shouldReturnListOfHospitals() {
         // Arrange
-        Hospital hospital1 = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
-        Hospital hospital2 = new Hospital("2", "County Hospital", "county@example.com", "Uptown", "0987654321", 20, HospitalType.PUBLIC_HOSPITAL);
+        Hospital hospital1 = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
+        Hospital hospital2 = new Hospital("2", "County Hospital", "county@example.com", "Uptown", "0987654321", HospitalType.PUBLIC_HOSPITAL);
         List<Hospital> hospitals = Arrays.asList(hospital1, hospital2);
 
         when(hospitalRepository.findAll()).thenReturn(hospitals);
@@ -74,7 +73,7 @@ public class HospitalServiceTest {
     @Test
     void getHospitalById_shouldReturnHospital_whenHospitalExists() {
         // Arrange
-        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
+        Hospital hospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalRepository.findById("1")).thenReturn(Optional.of(hospital));
 
@@ -101,8 +100,8 @@ public class HospitalServiceTest {
     @Test
     void updateHospital_shouldReturnUpdatedHospital_whenHospitalExists() {
         // Arrange
-        Hospital existingHospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", 10, HospitalType.PRIVATE_HOSPITAL);
-        Hospital updatedHospital = new Hospital("1", "Updated City Hospital", "updatedcity@example.com", "Downtown", "1234567890", 15, HospitalType.PRIVATE_HOSPITAL);
+        Hospital existingHospital = new Hospital("1", "City Hospital", "city@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
+        Hospital updatedHospital = new Hospital("1", "Updated City Hospital", "updatedcity@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalRepository.findById("1")).thenReturn(Optional.of(existingHospital));
         when(hospitalRepository.save(updatedHospital)).thenReturn(updatedHospital);
@@ -118,7 +117,7 @@ public class HospitalServiceTest {
     @Test
     void updateHospital_shouldReturnNull_whenHospitalDoesNotExist() {
         // Arrange
-        Hospital updatedHospital = new Hospital("1", "Updated City Hospital", "updatedcity@example.com", "Downtown", "1234567890", 15, HospitalType.PRIVATE_HOSPITAL);
+        Hospital updatedHospital = new Hospital("1", "Updated City Hospital", "updatedcity@example.com", "Downtown", "1234567890", HospitalType.PRIVATE_HOSPITAL);
 
         when(hospitalRepository.findById("1")).thenReturn(Optional.empty());
 
