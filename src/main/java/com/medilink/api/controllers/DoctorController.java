@@ -4,6 +4,7 @@ import com.medilink.api.dto.doctor.DoctorRequestDTO;
 import com.medilink.api.dto.doctor.DoctorResponseDTO;
 import com.medilink.api.models.Doctor;
 import com.medilink.api.services.DoctorService;
+import com.medilink.api.services.EmailService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,9 @@ public class DoctorController {
         this.modelMapper = modelMapper;
     }
 
+    @Autowired
+    private EmailService emailService;
+
     // Create doctor
     @PostMapping({"", "/"})
     public ResponseEntity<DoctorResponseDTO> createDoctor(@RequestBody DoctorRequestDTO doctorRequestDTO) {
@@ -35,6 +39,10 @@ public class DoctorController {
 
         Doctor doctor = modelMapper.map(doctorRequestDTO, Doctor.class);
         Doctor savedDoctor = doctorService.saveDoctor(doctor);
+
+        // Sending welcome email
+        emailService.sendWelcomeEmail(savedDoctor.getEmail(), savedDoctor.getName(), doctorRequestDTO.getPassword());
+
         DoctorResponseDTO doctorResponseDTO = modelMapper.map(savedDoctor, DoctorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(doctorResponseDTO);
     }
