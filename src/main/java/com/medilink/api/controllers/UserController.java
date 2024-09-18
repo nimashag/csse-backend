@@ -6,6 +6,7 @@ import com.medilink.api.models.User;
 import com.medilink.api.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class UserController {
         User user = modelMapper.map(userRequestDTO, User.class);
         User savedUser = userService.saveUser(user);
         UserResponseDTO userResponseDTO = modelMapper.map(savedUser, UserResponseDTO.class);
-        return ResponseEntity.ok(userResponseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
 
     // Get all users
