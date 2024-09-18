@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class DoctorRequestDTO {
     private String email;
     private String password;
     private String specialization;  // Doctor-specific field
+    private List<String> workingHospitals; // List of hospital IDs where the doctor works
 }

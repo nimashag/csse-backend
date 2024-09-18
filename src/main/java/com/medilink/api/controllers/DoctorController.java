@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -91,12 +92,21 @@ public class DoctorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDoctor(@PathVariable String id) {
         logger.info("[DOCTORS][DELETE] Incoming message. ID: {}", id);
-
         boolean deleted = doctorService.deleteDoctor(id);
         if (!deleted) {
             logger.warn("[DOCTORS][DELETE] Unable to delete. Doctor with ID {} not found.", id);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    // Get doctors by hospital ID
+    @GetMapping("/hospital/{hospitalId}")
+    public ResponseEntity<List<DoctorResponseDTO>> getDoctorsByHospital(@PathVariable String hospitalId) {
+        List<Doctor> doctors = doctorService.getDoctorsByHospitalId(hospitalId);
+        List<DoctorResponseDTO> response = doctors.stream()
+                .map(doctor -> modelMapper.map(doctor, DoctorResponseDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 }

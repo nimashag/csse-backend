@@ -1,18 +1,17 @@
 package com.medilink.api.dto.patient;
 
-import com.medilink.api.enums.UserType;
-import lombok.AllArgsConstructor;
+import com.medilink.api.models.Appointment;
+import com.medilink.api.models.MedicalHistory;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PatientRequestDTO {
-    private String name;
-    private String email;
-    private String password;
-    private UserType userType;
-    private String reason;
-    private String reason_description;
+    private String address;
+    private int age;
+    private String gender;
+    private String profileImage;
+    private List<Appointment> appointments;
+    private List<MedicalHistory> medicalHistory;
 }
