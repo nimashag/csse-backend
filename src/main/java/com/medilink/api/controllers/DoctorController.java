@@ -42,7 +42,11 @@ public class DoctorController {
         Doctor savedDoctor = doctorService.saveDoctor(doctor);
 
         // Sending welcome email
-        emailService.sendWelcomeEmail(savedDoctor.getEmail(), savedDoctor.getName(), doctorRequestDTO.getPassword());
+        try {
+            emailService.sendWelcomeEmail(savedDoctor.getEmail(), savedDoctor.getName(), doctorRequestDTO.getPassword());
+        } catch (Exception e) {
+            logger.warn("[DOCTORS][EMAIL] Failed to send welcome email to {}: {}", savedDoctor.getEmail(), e.getMessage());
+        }
 
         DoctorResponseDTO doctorResponseDTO = modelMapper.map(savedDoctor, DoctorResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(doctorResponseDTO);
