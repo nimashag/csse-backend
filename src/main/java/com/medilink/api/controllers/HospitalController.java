@@ -3,6 +3,7 @@ package com.medilink.api.controllers;
 import com.medilink.api.dto.hospital.HospitalRequestDTO;
 import com.medilink.api.dto.hospital.HospitalResponseDTO;
 import com.medilink.api.models.Hospital;
+import com.medilink.api.services.EmailService;
 import com.medilink.api.services.HospitalService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -28,6 +29,9 @@ public class HospitalController {
         this.modelMapper = modelMapper;
     }
 
+    @Autowired
+    private EmailService emailService;
+
     // Create hospital
     @PostMapping({"", "/"})
     public ResponseEntity<HospitalResponseDTO> createHospital(@RequestBody HospitalRequestDTO hospitalRequestDTO) {
@@ -35,6 +39,14 @@ public class HospitalController {
 
         Hospital hospital = modelMapper.map(hospitalRequestDTO, Hospital.class);
         Hospital savedHospital = hospitalService.saveHospital(hospital);
+
+        // Sending welcome email
+        try {
+            emailService.sendHospitalWelcomeEmail(savedHospital.getHospitalEmail(), savedHospital.getHospitalName()); // Assuming savedHospital has email and name
+        } catch (Exception e) {
+            logger.warn("[HOSPITALS][EMAIL] Failed to send welcome email to {}: {}", savedHospital.getHospitalEmail(), e.getMessage());
+        }
+
         HospitalResponseDTO hospitalResponseDTO = modelMapper.map(savedHospital, HospitalResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(hospitalResponseDTO);
     }
