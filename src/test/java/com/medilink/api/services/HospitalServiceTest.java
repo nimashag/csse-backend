@@ -1,5 +1,6 @@
 package com.medilink.api.services;
 
+import com.medilink.api.Impl.HospitalServiceImpl;
 import com.medilink.api.models.Hospital;
 import com.medilink.api.enums.HospitalType;
 import com.medilink.api.repositories.HospitalRepository;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class HospitalServiceTest {
 
     @InjectMocks
-    private HospitalService hospitalService;
+    private HospitalServiceImpl hospitalService;
 
     @Mock
     private HospitalRepository hospitalRepository;
