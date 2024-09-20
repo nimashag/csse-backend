@@ -81,17 +81,18 @@ public class DoctorServiceTest {
         assertEquals("Dr. John Doe", foundDoctor.getName());
     }
 
-//    @Test
-//    void getDoctorById_shouldReturnNull_whenDoctorDoesNotExist() {
-//        // Arrange
-//        when(doctorRepository.findById("2")).thenReturn(Optional.empty());
-//
-//        // Act
-//        Doctor foundDoctor = doctorService.getDoctorById("2");
-//
-//        // Assert
-//        assertNull(foundDoctor);
-//    }
+    @Test
+    void getDoctorById_shouldReturnNull_whenDoctorDoesNotExist() {
+        // Arrange
+        when(doctorRepository.findById("2")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            doctorService.getDoctorById("2");
+        });
+
+        assertEquals("Doctor not found", exception.getMessage());
+    }
 
     @Test
     void updateDoctor_shouldReturnUpdatedDoctor_whenDoctorExists() {
@@ -109,18 +110,19 @@ public class DoctorServiceTest {
         assertEquals("john.smith@example.com", result.getEmail());
     }
 
-//    @Test
-//    void updateDoctor_shouldReturnNull_whenDoctorDoesNotExist() {
-//        // Arrange
-//        Doctor updatedDoctor = new Doctor("2", "Dr. John Smith", "john.smith@example.com", "password1","Neurology",Arrays.asList("hospital1", "hospital2"));
-//        when(doctorRepository.findById("2")).thenReturn(Optional.empty());
-//
-//        // Act
-//        Doctor result = doctorService.updateDoctor("2", updatedDoctor);
-//
-//        // Assert
-//        assertNull(result);
-//    }
+    @Test
+    void updateDoctor_shouldReturnNull_whenDoctorDoesNotExist() {
+        // Arrange
+        Doctor updatedDoctor = new Doctor("2", "Dr. John Smith", "john.smith@example.com", "password1","Neurology",Arrays.asList("hospital1", "hospital2"));
+        when(doctorRepository.findById("2")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            doctorService.updateDoctor("2", updatedDoctor);
+        });
+
+        assertEquals("Doctor not found", exception.getMessage());
+    }
 
     @Test
     void deleteDoctor_shouldReturnTrue_whenDoctorExists() {
