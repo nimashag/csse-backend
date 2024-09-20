@@ -4,6 +4,7 @@ import com.medilink.api.models.Doctor;
 import com.medilink.api.repositories.DoctorRepository;
 import com.medilink.api.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,14 +14,18 @@ import java.util.Optional;
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, PasswordEncoder passwordEncoder) {
         this.doctorRepository = doctorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Doctor saveDoctor(Doctor doctor) {
+        // Encode password before saving
+        doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
         return doctorRepository.save(doctor);
     }
 
@@ -73,4 +78,17 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.getWorkingHospitals().remove(hospitalId);
         doctorRepository.save(doctor);
     }
+
+    @Override
+    public Doctor authenticateDoctor(String email, String password) {
+        Optional<Doctor> doctorOptional = doctorRepository.findByEmail(email);
+        if (doctorOptional.isPresent()) {
+            Doctor doctor = doctorOptional.get();
+            if (passwordEncoder.matches(password, doctor.getPassword())) {
+                return doctor;
+            }
+        }
+        return null; // Return null if authentication fails
+    }
+
 }
