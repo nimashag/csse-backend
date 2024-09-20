@@ -16,14 +16,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller class to manage doctor-related API endpoints.
+ */
 @RestController
 @RequestMapping("/api/doctors")
 public class DoctorController {
 
-    private final DoctorService doctorService;
-    private final ModelMapper modelMapper;
-    private static final Logger logger = LoggerFactory.getLogger(DoctorController.class);
+    private final DoctorService doctorService;  // Service for managing doctors
+    private final ModelMapper modelMapper;  // Mapper for converting between DTOs and entities
+    private static final Logger logger = LoggerFactory.getLogger(DoctorController.class);  // Logger for logging requests and responses
 
+    /**
+     * Constructor for DoctorController.
+     * @param doctorService Service for handling doctor operations.
+     * @param modelMapper Mapper for converting between DTOs and entities.
+     */
     @Autowired
     public DoctorController(DoctorService doctorService, ModelMapper modelMapper) {
         this.doctorService = doctorService;
@@ -31,9 +39,13 @@ public class DoctorController {
     }
 
     @Autowired
-    private EmailService emailService;
+    private EmailService emailService; // Service for sending emails
 
-    // Create doctor
+    /**
+     * Creates a new doctor and sends a welcome email.
+     * @param doctorRequestDTO Data Transfer Object for doctor creation.
+     * @return ResponseEntity containing the created doctor.
+     */
     @PostMapping({"", "/"})
     public ResponseEntity<DoctorResponseDTO> createDoctor(@RequestBody DoctorRequestDTO doctorRequestDTO) {
         logger.info("[DOCTORS][POST] Incoming message. Creating new doctor: {}", doctorRequestDTO);
@@ -52,7 +64,10 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(doctorResponseDTO);
     }
 
-    // Get all doctors
+    /**
+     * Retrieves all doctors.
+     * @return ResponseEntity containing a list of all doctors.
+     */
     @GetMapping({"", "/"})
     public ResponseEntity<List<DoctorResponseDTO>> getAllDoctors() {
         logger.info("[DOCTORS][GET] Incoming message. Retrieving all doctors.");
@@ -64,7 +79,11 @@ public class DoctorController {
         return ResponseEntity.ok(doctorResponseDTOs);
     }
 
-    // Get doctor by ID
+    /**
+     * Retrieves a doctor by ID.
+     * @param id ID of the doctor to retrieve.
+     * @return ResponseEntity containing the doctor details, or 404 if not found.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<DoctorResponseDTO> getDoctorById(@PathVariable String id) {
         logger.info("[DOCTORS][GET] Incoming message. ID: {}", id);
@@ -78,7 +97,12 @@ public class DoctorController {
         return ResponseEntity.ok(doctorResponseDTO);
     }
 
-    // Update doctor by ID
+    /**
+     * Updates a doctor by ID.
+     * @param id ID of the doctor to update.
+     * @param doctorRequestDTO Data Transfer Object containing updated doctor information.
+     * @return ResponseEntity containing the updated doctor details, or 404 if not found.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<DoctorResponseDTO> updateDoctor(@PathVariable String id, @RequestBody DoctorRequestDTO doctorRequestDTO) {
         logger.info("[DOCTORS][PUT] Incoming message. ID: {} body: {}", id, doctorRequestDTO);
@@ -92,7 +116,11 @@ public class DoctorController {
         return ResponseEntity.ok(doctorResponseDTO);
     }
 
-    // Delete doctor by ID
+    /**
+     * Deletes a doctor by ID.
+     * @param id ID of the doctor to delete.
+     * @return ResponseEntity with no content, or 404 if not found.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDoctor(@PathVariable String id) {
         logger.info("[DOCTORS][DELETE] Incoming message. ID: {}", id);
@@ -104,7 +132,12 @@ public class DoctorController {
         return ResponseEntity.noContent().build();
     }
 
-    // Assign a hospital to a doctor
+    /**
+     * Assigns a hospital to a doctor.
+     * @param doctorId ID of the doctor.
+     * @param hospitalId ID of the hospital.
+     * @return ResponseEntity with 200 OK on success, or 404 if not found.
+     */
     @PostMapping("/{doctorId}/hospitals/{hospitalId}")
     public ResponseEntity<Void> assignHospitalToDoctor(@PathVariable String doctorId, @PathVariable String hospitalId) {
         logger.info("[DOCTORS][POST] Assigning hospital {} to doctor {}", hospitalId, doctorId);
@@ -118,7 +151,12 @@ public class DoctorController {
         }
     }
 
-    // Unassign a hospital from a doctor
+    /**
+     * Unassigns a hospital from a doctor.
+     * @param doctorId ID of the doctor.
+     * @param hospitalId ID of the hospital.
+     * @return ResponseEntity with 200 OK on success, or 404 if not found.
+     */
     @DeleteMapping("/{doctorId}/hospitals/{hospitalId}")
     public ResponseEntity<Void> unassignHospitalFromDoctor(@PathVariable String doctorId, @PathVariable String hospitalId) {
         logger.info("[DOCTORS][DELETE] Unassigning hospital {} from doctor {}", hospitalId, doctorId);
@@ -132,6 +170,11 @@ public class DoctorController {
         }
     }
 
+    /**
+     * Authenticates a doctor using email and password.
+     * @param doctorRequestDTO Data Transfer Object containing doctor credentials.
+     * @return ResponseEntity containing the authenticated doctor, or 401 Unauthorized if authentication fails.
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<DoctorResponseDTO> authenticateDoctor(@RequestBody DoctorRequestDTO doctorRequestDTO) {
         logger.info("[DOCTORS][AUTHENTICATE] Authenticating doctor with email: {}", doctorRequestDTO.getEmail());
@@ -146,7 +189,11 @@ public class DoctorController {
         }
     }
 
-    // Get doctors by hospital ID
+    /**
+     * Retrieves doctors by hospital ID.
+     * @param hospitalId ID of the hospital to retrieve doctors from.
+     * @return ResponseEntity containing a list of doctors associated with the specified hospital.
+     */
     @GetMapping("/hospital/{hospitalId}")
     public ResponseEntity<List<DoctorResponseDTO>> getDoctorsByHospital(@PathVariable String hospitalId) {
         List<Doctor> doctors = doctorService.getDoctorsByHospitalId(hospitalId);

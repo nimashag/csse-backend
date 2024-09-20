@@ -7,6 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Represents a Doctor entity.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "doctors")
 @Data

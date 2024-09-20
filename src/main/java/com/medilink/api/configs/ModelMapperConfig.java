@@ -7,8 +7,16 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for ModelMapper, used for object mapping between DTOs and entities.
+ */
 @Configuration
 public class ModelMapperConfig {
+
+    /**
+     * Creates a ModelMapper bean with strict matching strategy, which requires exact matches for property names.
+     * @return A configured ModelMapper instance.
+     */
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
