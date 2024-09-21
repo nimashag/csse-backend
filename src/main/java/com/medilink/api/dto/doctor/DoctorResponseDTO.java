@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Data Transfer Object for returning Doctor information.
+ * Data Transfer Object (DTO) for returning Doctor information.
  */
 @Data
 @NoArgsConstructor
