@@ -157,4 +157,19 @@ public class DoctorServiceTest {
         assertFalse(result);
         verify(doctorRepository, never()).deleteById("2");
     }
+
+    @Test
+    void addHospitalToDoctor_shouldAddHospitalToDoctor() {
+        // Arrange
+        String hospitalId = "hospital1";
+        when(doctorRepository.findById("1")).thenReturn(Optional.of(doctor));
+        when(doctorRepository.save(doctor)).thenReturn(doctor);
+
+        // Act
+        doctorService.addHospitalToDoctor("1", hospitalId);
+
+        // Assert
+        assertTrue(doctor.getWorkingHospitals().contains(hospitalId));
+        verify(doctorRepository, times(1)).save(doctor);
+    }
 }
