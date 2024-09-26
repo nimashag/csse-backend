@@ -28,7 +28,7 @@ public class ReceptionistController {
 
     @PostMapping("/create")
     public ResponseEntity<ReceptionistResponseDTO> createReceptionist(@RequestBody ReceptionistRequestDTO receptionistRequestDTO) {
-        Receptionist receptionist = modelMapper.map(receptionistService, Receptionist.class);
+        Receptionist receptionist = modelMapper.map(receptionistRequestDTO, Receptionist.class);
         User savedReceptionist = receptionistService.saveReceptionist(receptionist);
         ReceptionistResponseDTO receptionistResponseDTO = modelMapper.map(savedReceptionist, ReceptionistResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(receptionistResponseDTO);
@@ -70,5 +70,18 @@ public class ReceptionistController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<ReceptionistResponseDTO> authenticateReceptionist(@RequestBody ReceptionistRequestDTO receptionistRequestDTO) {
+        Receptionist authenticatedReceptionist =
+                receptionistService.authenticateReceptionist(receptionistRequestDTO.getEmail(),
+                receptionistRequestDTO.getPassword());
+        if (authenticatedReceptionist != null) {
+            ReceptionistResponseDTO receptionistResponseDTO = modelMapper.map(authenticatedReceptionist, ReceptionistResponseDTO.class);
+            return ResponseEntity.ok(receptionistResponseDTO); // Return authenticated receptionist
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Return 401 Unauthorized if authentication fails
+        }
     }
 }
