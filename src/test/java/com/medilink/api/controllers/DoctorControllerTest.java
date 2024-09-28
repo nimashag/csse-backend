@@ -16,11 +16,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class DoctorControllerTest {
 
@@ -51,12 +50,14 @@ public class DoctorControllerTest {
         requestDto.setPassword("password123");
         requestDto.setWorkingHospitals(Arrays.asList("hospital1", "hospital2"));
 
+        //A Doctor object is also created to represent the entity after being mapped from the request
         Doctor doctor = new Doctor();
         doctor.setName("Dr. John Doe");
         doctor.setEmail("john.doe@example.com");
         doctor.setSpecialization("Cardiology");
         doctor.setPassword("password123");
 
+        //A DoctorResponseDTO is created to simulate what the API should return in the response after successfully creating the doctor.
         DoctorResponseDTO responseDto = new DoctorResponseDTO();
         responseDto.setName("Dr. John Doe");
         responseDto.setEmail("john.doe@example.com");
@@ -96,7 +97,7 @@ public class DoctorControllerTest {
         when(modelMapper.map(doctor1, DoctorResponseDTO.class)).thenReturn(responseDto1);
         when(modelMapper.map(doctor2, DoctorResponseDTO.class)).thenReturn(responseDto2);
 
-        // Act
+        // Act - The controller's getAllDoctors method is called.
         ResponseEntity<List<DoctorResponseDTO>> response = doctorController.getAllDoctors();
 
         // Assert
