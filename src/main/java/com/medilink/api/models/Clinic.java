@@ -1,11 +1,14 @@
 package com.medilink.api.models;
 
-import com.medilink.api.enums.UserType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "users")
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Document(collection = "clinics")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,12 +16,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class User {
+public class Clinic {
     @Id
     private String id;
-    private String name;
-    private String email;
-    private String password;
-    private UserType userType;
+    private String clinicName;
+    private Doctor doctor;
+    private Hospital hospital;
+    private List<Patient> patients = new ArrayList<>();
 
 }
