@@ -43,7 +43,7 @@ public class DoctorController {
 
         // Sending welcome email
         try {
-            emailService.sendWelcomeEmail(savedDoctor.getEmail(), savedDoctor.getName(), doctorRequestDTO.getPassword());
+            emailService.sendDoctorWelcomeEmail(savedDoctor.getEmail(), savedDoctor.getName(), doctorRequestDTO.getPassword());
         } catch (Exception e) {
             logger.warn("[DOCTORS][EMAIL] Failed to send welcome email to {}: {}", savedDoctor.getEmail(), e.getMessage());
         }
