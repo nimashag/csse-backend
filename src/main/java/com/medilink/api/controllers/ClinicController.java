@@ -75,4 +75,16 @@ public class ClinicController {
         return ResponseEntity.ok(clinicResponseDTO);
     }
 
+    @GetMapping("/patient/{patientId}/")
+    public ResponseEntity<List<ClinicResponseDTO>> getClinicsByPatientId(@PathVariable String patientId) {
+        List<Clinic> clinics = clinicService.getClinicsByPatientId(patientId);
+
+        List<ClinicResponseDTO> clinicResponseDTOs = clinics.stream()
+                .map(clinic -> modelMapper.map(clinic, ClinicResponseDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(clinicResponseDTOs);
+    }
+
+
 }

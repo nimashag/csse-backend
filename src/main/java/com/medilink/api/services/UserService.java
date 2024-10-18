@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User saveUser(User user) {
         return userRepository.save(user);
@@ -27,25 +31,21 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null); // Return user if found, else null
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public User updateUser(String id, User user) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            user.setId(id); // Keep the existing ID
-            return userRepository.save(user); // Update and save
-        } else {
-            return null;
-        }
+        return userRepository.findById(id).map(existingUser -> {
+            user.setId(id); // Ensure the ID remains unchanged
+            return userRepository.save(user); // Save updated user
+        }).orElse(null);
     }
 
     public boolean deleteUser(String id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

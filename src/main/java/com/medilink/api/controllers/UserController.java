@@ -5,7 +5,6 @@ import com.medilink.api.dto.user.UserResponseDTO;
 import com.medilink.api.models.User;
 import com.medilink.api.services.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +18,13 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
+    // Constructor-based dependency injection
     public UserController(UserService userService, ModelMapper modelMapper) {
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
 
-    // Create user
+    // Create a new user
     @PostMapping({"", "/"})
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
         User user = modelMapper.map(userRequestDTO, User.class);
@@ -38,11 +38,10 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         List<UserResponseDTO> userResponseDTOs = users.stream()
-                .map(user -> modelMapper.map(user, UserResponseDTO.class)) // Mapping User to UserResponseDTO
-                .toList(); // Collect to List
+                .map(user -> modelMapper.map(user, UserResponseDTO.class))
+                .toList();
         return ResponseEntity.ok(userResponseDTOs);
     }
-
 
     // Get user by ID
     @GetMapping("/{id}")
@@ -76,14 +75,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    // Get user by email
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
-        User user = userService.getUserByEmail(email); // Implement this method in UserService
+        User user = userService.getUserByEmail(email);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
         UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
         return ResponseEntity.ok(userResponseDTO);
     }
-
 }

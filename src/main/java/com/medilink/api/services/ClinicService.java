@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClinicService {
@@ -80,4 +81,14 @@ public class ClinicService {
     public Clinic getOneClinic(String id){
         return clinicRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Clinic not found"));
     }
+
+    public List<Clinic> getClinicsByPatientId(String patientId) {
+        List<Clinic> allClinics = clinicRepository.findAll();
+        // Filter clinics where the patient list contains the given patient ID
+        return allClinics.stream()
+                .filter(clinic -> clinic.getPatients().stream()
+                        .anyMatch(patient -> patient.getId().equals(patientId)))
+                .collect(Collectors.toList());
+    }
+
 }

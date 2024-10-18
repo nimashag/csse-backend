@@ -11,6 +11,8 @@ public class PatientResponseDTO {
     private String id;
     private String name;
     private String email;
+    private String contactNumber; // Newly added field
+    private String emergencyDial; // Newly added field
     private String profileImage;
     private String address;
     private int age;

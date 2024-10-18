@@ -8,6 +8,11 @@ import java.util.List;
 
 @Data
 public class PatientRequestDTO {
+    private String name;
+    private String email;
+    private String password; // Newly added field
+    private String contactNumber; // Newly added field
+    private String emergencyDial; // Newly added field
     private String address;
     private int age;
     private String gender;

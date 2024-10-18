@@ -4,6 +4,7 @@ import com.medilink.api.enums.UserType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "users")
 @Data
@@ -17,6 +18,7 @@ public class User {
     @Id
     private String id;
     private String name;
+    @Field("userEmail")  // Custom field name to avoid collision
     private String email;
     private String password;
     private UserType userType;
