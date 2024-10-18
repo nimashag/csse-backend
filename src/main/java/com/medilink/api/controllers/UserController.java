@@ -75,4 +75,15 @@ public class UserController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
+        User user = userService.getUserByEmail(email); // Implement this method in UserService
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+        return ResponseEntity.ok(userResponseDTO);
+    }
+
 }

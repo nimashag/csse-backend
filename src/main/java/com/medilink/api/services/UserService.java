@@ -26,11 +26,15 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null); // Return user if found, else null
+    }
+
     public User updateUser(String id, User user) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
-            user.setId(id);  // Keep the existing ID
-            return userRepository.save(user);  // Update and save
+            user.setId(id); // Keep the existing ID
+            return userRepository.save(user); // Update and save
         } else {
             return null;
         }

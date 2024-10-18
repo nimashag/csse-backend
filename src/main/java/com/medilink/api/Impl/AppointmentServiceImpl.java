@@ -1,68 +1,74 @@
 package com.medilink.api.Impl;
 
 import com.medilink.api.models.Appointment;
-import com.medilink.api.models.Patient;
-import com.medilink.api.repositories.PatientRepository;
+import com.medilink.api.repositories.AppointmentRepository;
 import com.medilink.api.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
-    @Autowired
-    private PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
 
-    @Override
-    public Appointment makeAppointment(Appointment appointment, String patientId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        patient.getAppointments().add(appointment);
-        patientRepository.save(patient);
-        return appointment;
+    @Autowired
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
-    public Appointment updateAppointment(String appointmentId, Appointment updatedAppointment, String patientId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        patient.getAppointments().stream()
-                .filter(appointment -> appointment.getAppointmentId().equals(appointmentId))
-                .findFirst()
-                .ifPresent(appointment -> {
-                    appointment.setAppointmentDate(updatedAppointment.getAppointmentDate());
-                    appointment.setHospitalId(updatedAppointment.getHospitalId());
-                    appointment.setStatus(updatedAppointment.getStatus());
-                });
-        patientRepository.save(patient);
-        return updatedAppointment;
+    public Appointment makeAppointment(Appointment appointment, String patientId) {
+        appointment.setPatientId(patientId);  // Ensure the appointment is linked to the patient
+        return appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public Appointment updateAppointment(String appointmentId, Appointment appointment, String patientId) {
+        // Check if the appointment exists
+        Appointment existingAppointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        // Update the existing appointment's details
+        existingAppointment.setDate(appointment.getDate());
+        existingAppointment.setTime(appointment.getTime());
+        existingAppointment.setDoctorId(appointment.getDoctorId());
+        existingAppointment.setHospitalId(appointment.getHospitalId());
+        // ... (update other fields as necessary)
+
+        return appointmentRepository.save(existingAppointment);
     }
 
     @Override
     public void deleteAppointment(String appointmentId, String patientId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        patient.getAppointments().removeIf(appointment -> appointment.getAppointmentId().equals(appointmentId));
-        patientRepository.save(patient);
+        // Check if the appointment exists
+        Appointment existingAppointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        // Ensure the appointment belongs to the patient before deleting
+        if (!existingAppointment.getPatientId().equals(patientId)) {
+            throw new RuntimeException("You do not have permission to delete this appointment");
+        }
+
+        appointmentRepository.delete(existingAppointment);
     }
 
     @Override
     public Appointment getAppointmentById(String appointmentId, String patientId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        return patient.getAppointments().stream()
-                .filter(appointment -> appointment.getAppointmentId().equals(appointmentId))
-                .findFirst()
+        Appointment existingAppointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        // Ensure the appointment belongs to the patient
+        if (!existingAppointment.getPatientId().equals(patientId)) {
+            throw new RuntimeException("You do not have permission to view this appointment");
+        }
+
+        return existingAppointment;
     }
 
     @Override
     public List<Appointment> getAllAppointments(String patientId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        return patient.getAppointments();
+        return appointmentRepository.findByPatientId(patientId);
     }
 }
