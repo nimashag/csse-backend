@@ -44,9 +44,9 @@ public class BedService {
 
 
         if (bedRequestDTO.getPatientId() != null) {
-            Patient patient = patientService.getPatient(bedRequestDTO.getPatientId());
-            existingBed.setPatient(patient);
-            existingBed.setStatus(BedType.RECEIVED);
+//            Patient patient = patientService.getPatient(bedRequestDTO.getPatientId());
+//            existingBed.setPatient(patient);
+//            existingBed.setStatus(BedType.RECEIVED);
         } else {
 
             existingBed.setPatient(null);

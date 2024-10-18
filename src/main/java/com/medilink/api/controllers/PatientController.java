@@ -2,59 +2,48 @@ package com.medilink.api.controllers;
 
 import com.medilink.api.dto.patient.PatientRequestDTO;
 import com.medilink.api.dto.patient.PatientResponseDTO;
-import com.medilink.api.dto.user.UserRequestDTO;
-import com.medilink.api.dto.user.UserResponseDTO;
-import com.medilink.api.enums.UserType;
-import com.medilink.api.models.Hospital;
-import com.medilink.api.models.Patient;
 import com.medilink.api.services.PatientService;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api/patients")
+@RequestMapping("/api/patients")
 public class PatientController {
 
-    private final PatientService patientService;
-    private final ModelMapper modelMapper;
+    @Autowired
+    private PatientService patientService;
 
-    public PatientController(PatientService patientService, ModelMapper modelMapper) {
-        this.patientService = patientService;
-        this.modelMapper = modelMapper;
-    }
-
-    //create Patient
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<PatientResponseDTO> createPatient(@RequestBody PatientRequestDTO patientRequestDTO) {
-        Patient patient = modelMapper.map(patientRequestDTO, Patient.class);
-        patient.setUserType(UserType.PATIENT);
-        Patient savedPatient = patientService.savePatient(patient);
-        PatientResponseDTO patientResponseDTO = modelMapper.map(savedPatient, PatientResponseDTO.class);
-        return ResponseEntity.ok(patientResponseDTO);
+        PatientResponseDTO createdPatient = patientService.createPatient(patientRequestDTO);
+        return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<PatientResponseDTO> updatePatient(@PathVariable("id") String id, @RequestBody PatientRequestDTO patientRequestDTO) {
-        Patient patientToUpdate = modelMapper.map(patientRequestDTO, Patient.class);
-        Patient updatedPatient = patientService.updatePatient(id, patientToUpdate);
-
-        if (updatedPatient != null) {
-            PatientResponseDTO responseDTO = modelMapper.map(updatedPatient, PatientResponseDTO.class);
-            return ResponseEntity.ok(responseDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientResponseDTO> updatePatient(@PathVariable String id, @RequestBody PatientRequestDTO patientRequestDTO) {
+        PatientResponseDTO updatedPatient = patientService.updatePatient(id, patientRequestDTO);
+        return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable("id") String id) {
-        Patient existingPatient = patientService.getPatient(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable String id) {
+        patientService.deletePatient(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
-        if (existingPatient != null) {
-            patientService.deletePatient(id);
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientResponseDTO> getPatient(@PathVariable String id) {
+        PatientResponseDTO patient = patientService.getPatientById(id);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
+    }
 
-        return null;
+    @GetMapping
+    public ResponseEntity<List<PatientResponseDTO>> getAllPatients() {
+        List<PatientResponseDTO> patients = patientService.getAllPatients();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 }
