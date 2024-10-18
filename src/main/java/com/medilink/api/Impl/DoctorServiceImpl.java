@@ -35,8 +35,13 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void deleteDoctor(String doctorId) {
-        doctorRepository.deleteById(doctorId);
+    public boolean deleteDoctor(String id) {
+        if (doctorRepository.existsById(id)) {
+            doctorRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
