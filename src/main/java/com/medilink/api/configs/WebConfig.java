@@ -11,9 +11,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("*") // Allow all origins
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(false);  // Disable credentials if allowing all origins
+                .allowedOrigins("*")  // Allow all origins (wildcard)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allow all needed methods
+                .allowedHeaders("*")  // Allow all headers
+                .allowCredentials(false);  // Disable credentials, required when using wildcard for origins
     }
 }
+

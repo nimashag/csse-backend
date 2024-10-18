@@ -19,6 +19,7 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<PatientResponseDTO> createPatient(@RequestBody PatientRequestDTO patientRequestDTO) {
+        System.out.println(patientRequestDTO);
         PatientResponseDTO createdPatient = patientService.createPatient(patientRequestDTO);
         return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
     }
@@ -45,5 +46,11 @@ public class PatientController {
     public ResponseEntity<List<PatientResponseDTO>> getAllPatients() {
         List<PatientResponseDTO> patients = patientService.getAllPatients();
         return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<PatientResponseDTO> getPatientByEmail(@PathVariable String email) {
+        PatientResponseDTO patient = patientService.getPatientByEmail(email);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 }

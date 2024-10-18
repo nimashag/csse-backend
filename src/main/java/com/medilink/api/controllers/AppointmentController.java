@@ -26,6 +26,7 @@ public class AppointmentController {
     @PostMapping
     public ResponseEntity<AppointmentResponseDTO> createAppointment(@PathVariable String patientId, @RequestBody AppointmentRequestDTO appointmentRequestDTO) {
         Appointment appointment = modelMapper.map(appointmentRequestDTO, Appointment.class);
+        appointment.setPatientId(patientId); // Ensure the appointment is linked to the patient
         Appointment createdAppointment = appointmentService.makeAppointment(appointment, patientId);
         AppointmentResponseDTO responseDTO = modelMapper.map(createdAppointment, AppointmentResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);

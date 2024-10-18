@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "doctors")
@@ -14,7 +15,7 @@ import java.util.List;
 @ToString
 public class Doctor extends User {
     private String specialization;
-    private List<String> workingHospitals; // List of hospital IDs where the doctor works
+    private List<String> workingHospitals = new ArrayList<>(); // List of hospital IDs where the doctor works
 
     public Doctor() {
         super.setUserType(UserType.DOCTOR);
@@ -23,6 +24,6 @@ public class Doctor extends User {
     public Doctor(String id, String name, String email, String password, String specialization, List<String> workingHospitals) {
         super(id, name, email, password, UserType.DOCTOR);
         this.specialization = specialization;
-        this.workingHospitals = workingHospitals;
+        this.workingHospitals = workingHospitals != null ? workingHospitals : new ArrayList<>(); // Ensure list is not null
     }
 }
