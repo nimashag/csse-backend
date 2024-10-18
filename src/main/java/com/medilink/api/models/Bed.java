@@ -1,6 +1,7 @@
 package com.medilink.api.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.medilink.api.dto.patient.PatientResponseDTO;
 import com.medilink.api.enums.BedType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -18,6 +19,6 @@ public class Bed {
     @Id
     private String bedId;
     private String wardId;
-    private Patient patient;
+    private PatientResponseDTO patient;
     private BedType status = BedType.AVAILABLE;
 }

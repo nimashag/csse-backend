@@ -34,8 +34,6 @@ public class BedController {
     @PutMapping("/update")
     public ResponseEntity<BedResponseDTO> updateBed(@RequestBody BedRequestDTO bedRequestDTO) {
         Bed updatedBed = bedService.updateBed(bedRequestDTO);
-
-        // Map the updated bed to a response DTO
         BedResponseDTO bedResponseDTO = modelMapper.map(updatedBed, BedResponseDTO.class);
 
         return ResponseEntity.ok(bedResponseDTO);
@@ -51,7 +49,7 @@ public class BedController {
 
     // Delete user by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteBed(@PathVariable String id) {
         bedService.deleteBed(id);
         return null;
     }
