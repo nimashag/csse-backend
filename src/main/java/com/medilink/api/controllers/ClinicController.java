@@ -82,5 +82,12 @@ public class ClinicController {
         return ResponseEntity.ok(clinicResponseDTOs);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClinic(@PathVariable String id) {
+        clinicService.deleteClinic(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 }

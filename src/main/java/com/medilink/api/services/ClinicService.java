@@ -52,25 +52,24 @@ public class ClinicService {
 
     public Clinic addPatientToClinic(String clinicId, String patientId) {
 
-        // Fetch the clinic by its ID
         Clinic clinic = clinicRepository.findById(clinicId)
                 .orElseThrow(() -> new IllegalArgumentException("Clinic not found"));
 
-        // Fetch the patient by its ID
+
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient not found"));
 
-        // Add the patient to the clinic's patient list
+
         List<Patient> patients = clinic.getPatients();
         if (patients == null) {
             patients = new ArrayList<>();
         }
-        patients.add(patient);  // Add the new patient to the list
+        patients.add(patient);
 
-        // Update the clinic with the new patient list
+
         clinic.setPatients(patients);
 
-        // Save the updated clinic back to the database
+
         return clinicRepository.save(clinic);
     }
 
@@ -89,6 +88,10 @@ public class ClinicService {
                 .filter(clinic -> clinic.getPatients().stream()
                         .anyMatch(patient -> patient.getId().equals(patientId)))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteClinic(String id) {
+        clinicRepository.deleteById(id);
     }
 
 }
