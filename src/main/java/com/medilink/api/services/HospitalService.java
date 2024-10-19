@@ -1,47 +1,46 @@
 package com.medilink.api.services;
 
 import com.medilink.api.models.Hospital;
-import com.medilink.api.repositories.HospitalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class HospitalService {
+/**
+ * Service interface for managing Hospital entities.
+ */
+public interface HospitalService {
 
-    @Autowired
-    private HospitalRepository hospitalRepository;
+    /**
+     * Saves a hospital to the repository.
+     * @param hospital Hospital entity to save.
+     * @return The saved hospital entity.
+     */
+    Hospital saveHospital(Hospital hospital);
 
-    public Hospital saveHospital(Hospital hospital) {
-        return hospitalRepository.save(hospital);
-    }
+    /**
+     * Retrieves all hospitals from the repository.
+     * @return List of all hospitals.
+     */
+    List<Hospital> getAllHospitals();
 
-    public List<Hospital> getAllHospitals() {
-        return hospitalRepository.findAll();
-    }
+    /**
+     * Retrieves a hospital by its ID.
+     * @param id ID of the hospital to retrieve.
+     * @return The hospital entity, or null if not found.
+     */
+    Hospital getHospitalById(String id);
 
-    public Hospital getHospitalById(String id) {
-        return hospitalRepository.findById(id).orElse(null);
-    }
+    /**
+     * Updates a hospital in the repository.
+     * @param id ID of the hospital to update.
+     * @param hospital Updated hospital entity.
+     * @return The updated hospital entity.
+     */
+    Hospital updateHospital(String id, Hospital hospital);
 
-    public Hospital updateHospital(String id, Hospital hospital) {
-        Optional<Hospital> existingHospital = hospitalRepository.findById(id);
-        if (existingHospital.isPresent()) {
-            hospital.setHospitalId(id);  // Keep the existing ID
-            return hospitalRepository.save(hospital);  // Update and save
-        } else {
-            return null;
-        }
-    }
-
-    public boolean deleteHospital(String id) {
-        if (hospitalRepository.existsById(id)) {
-            hospitalRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
-    }
+    /**
+     * Deletes a hospital from the repository by ID.
+     * @param id ID of the hospital to delete.
+     * @return True if deletion was successful, false otherwise.
+     */
+    boolean deleteHospital(String id);
 }

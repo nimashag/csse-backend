@@ -5,6 +5,9 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Represents a Hospital entity.
+ */
 @Document(collection = "hospitals")
 @Data
 @NoArgsConstructor
