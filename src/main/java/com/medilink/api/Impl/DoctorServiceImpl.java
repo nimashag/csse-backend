@@ -52,6 +52,11 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor updateDoctor(String doctorId, Doctor doctor) {
         Optional<Doctor> existingDoctor = doctorRepository.findById(doctorId);
         if (existingDoctor.isPresent()) {
+            if (doctor.getPassword() == null) {
+                doctor.setPassword(existingDoctor.get().getPassword());
+            } else {
+                doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
+            }
             doctor.setId(doctorId);
             return doctorRepository.save(doctor);
         }
