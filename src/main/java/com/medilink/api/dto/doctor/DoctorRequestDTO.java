@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Data Transfer Object for creating/updating a Doctor.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

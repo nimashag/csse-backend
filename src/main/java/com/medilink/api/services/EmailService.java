@@ -8,6 +8,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for sending email notifications to doctors and hospitals.
+ */
 @Service
 public class EmailService {
 
@@ -16,19 +19,25 @@ public class EmailService {
 
     // Injecting the custom properties
     @Value("${app.mode}")
-    private String appMode;
+    private String appMode; // The current mode of the application (e.g., "test" or "production")
 
     @Value("${app.test.email}")
-    private String testEmail;
+    private String testEmail; // The test email address to use in testing mode
 
     @Value("${app.email.enabled}")
-    private boolean isEmailEnabled;
+    private boolean isEmailEnabled; // Flag indicating whether email sending is enabled
 
     @Autowired
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
+    /**
+     * Sends a welcome email to a newly registered doctor.
+     * @param toEmail The email address of the doctor.
+     * @param doctorName The name of the doctor.
+     * @param password The password for the doctor's account.
+     */
     public void sendDoctorWelcomeEmail(String toEmail, String doctorName, String password) {
         if (!isEmailEnabled) {
             logger.warn("[EMAIL] Email service is disabled. Skipping email send.");
@@ -53,6 +62,11 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    /**
+     * Sends a welcome email to a newly registered hospital.
+     * @param toEmail The email address of the hospital.
+     * @param hospitalName The name of the hospital.
+     */
     public void sendHospitalWelcomeEmail(String toEmail, String hospitalName) {
         if (!isEmailEnabled) {
             logger.warn("[EMAIL] Email service is disabled. Skipping email send.");
