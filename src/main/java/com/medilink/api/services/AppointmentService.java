@@ -10,4 +10,5 @@ public interface AppointmentService {
     void deleteAppointment(String appointmentId, String patientId);
     Appointment getAppointmentById(String appointmentId, String patientId);
     List<Appointment> getAllAppointments(String patientId);
+    List<Appointment> getAllAppointmentsByDoctorId(String doctorId);
 }

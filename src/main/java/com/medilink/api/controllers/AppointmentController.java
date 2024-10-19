@@ -67,4 +67,13 @@ public class AppointmentController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responseDTOs);
     }
+
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<AppointmentResponseDTO>> getAppointmentsByDoctor(@PathVariable String doctorId) {
+        List<Appointment> appointments = appointmentService.getAllAppointmentsByDoctorId(doctorId);
+        List<AppointmentResponseDTO> responseDTOs = appointments.stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responseDTOs);
+    }
 }
