@@ -132,6 +132,20 @@ public class DoctorController {
         }
     }
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<DoctorResponseDTO> authenticateDoctor(@RequestBody DoctorRequestDTO doctorRequestDTO) {
+        logger.info("[DOCTORS][AUTHENTICATE] Authenticating doctor with email: {}", doctorRequestDTO.getEmail());
+
+        Doctor authenticatedDoctor = doctorService.authenticateDoctor(doctorRequestDTO.getEmail(), doctorRequestDTO.getPassword());
+        if (authenticatedDoctor != null) {
+            DoctorResponseDTO doctorResponseDTO = modelMapper.map(authenticatedDoctor, DoctorResponseDTO.class);
+            return ResponseEntity.ok(doctorResponseDTO); // Return authenticated doctor
+        } else {
+            logger.warn("[DOCTORS][AUTHENTICATE] Authentication failed for email: {}", doctorRequestDTO.getEmail());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Return 401 Unauthorized if authentication fails
+        }
+    }
+
     // Get doctors by hospital ID
     @GetMapping("/hospital/{hospitalId}")
     public ResponseEntity<List<DoctorResponseDTO>> getDoctorsByHospital(@PathVariable String hospitalId) {

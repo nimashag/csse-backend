@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +25,9 @@ public class DoctorServiceTest {
     @Mock
     private DoctorRepository doctorRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;  // Mock the PasswordEncoder
+
     private Doctor doctor;
 
     @BeforeEach
@@ -35,12 +39,15 @@ public class DoctorServiceTest {
         doctor.setId("1");
         doctor.setName("Dr. John Doe");
         doctor.setEmail("john.doe@example.com");
+        doctor.setPassword("password123");
         doctor.setSpecialization("Cardiology");
     }
 
     @Test
     void saveDoctor_shouldReturnSavedDoctor() {
         // Arrange
+        String encodedPassword = "encodedPassword123"; // Define the encoded password
+        when(passwordEncoder.encode(doctor.getPassword())).thenReturn(encodedPassword);  // Mock password encoding
         when(doctorRepository.save(doctor)).thenReturn(doctor);
 
         // Act
@@ -49,6 +56,7 @@ public class DoctorServiceTest {
         // Assert
         assertNotNull(savedDoctor);
         assertEquals("1", savedDoctor.getId());
+        assertEquals(encodedPassword, savedDoctor.getPassword()); // Ensure password was encoded
         assertEquals("Dr. John Doe", savedDoctor.getName());
         assertEquals("john.doe@example.com", savedDoctor.getEmail());
     }
