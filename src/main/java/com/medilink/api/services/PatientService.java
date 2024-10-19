@@ -2,6 +2,7 @@ package com.medilink.api.services;
 
 import com.medilink.api.dto.patient.PatientRequestDTO;
 import com.medilink.api.dto.patient.PatientResponseDTO;
+import com.medilink.api.models.Patient;
 
 import java.util.List;
 

@@ -5,6 +5,7 @@ import com.medilink.api.dto.ward.WardResponseDTO;
 import com.medilink.api.models.Bed;
 import com.medilink.api.models.Hospital;
 import com.medilink.api.models.Ward;
+import com.medilink.api.repositories.BedRepository;
 import com.medilink.api.repositories.WardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,10 @@ public class WardService {
 
     @Autowired
     private BedService bedService;
+
+
+    @Autowired
+    private BedRepository bedRepository;
 
     public WardResponseDTO createWard(WardRequestDTO request) {
 
@@ -64,6 +69,10 @@ public class WardService {
 
     public boolean deleteWard(String id) {
         if (wardRepository.existsById(id)) {
+
+            List<Bed> beds = bedService.findBedsByWardId(id);
+            bedRepository.deleteAll(beds);
+
             wardRepository.deleteById(id);
             return true;
         } else {

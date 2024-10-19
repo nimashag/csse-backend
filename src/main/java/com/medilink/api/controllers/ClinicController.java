@@ -2,15 +2,11 @@ package com.medilink.api.controllers;
 
 import com.medilink.api.dto.clinic.ClinicRequestDTO;
 import com.medilink.api.dto.clinic.ClinicResponseDTO;
-import com.medilink.api.dto.hospital.HospitalResponseDTO;
-import com.medilink.api.dto.ward.WardResponseDTO;
 import com.medilink.api.models.Clinic;
 import com.medilink.api.services.ClinicService;
-import com.medilink.api.services.HospitalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

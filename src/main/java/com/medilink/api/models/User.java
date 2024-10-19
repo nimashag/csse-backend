@@ -18,6 +18,7 @@ public class User {
     @Id
     private String id;
     private String name;
+    // @Field("userEmail")  // Custom field name to avoid collision
     private String email;
     private String password;
     private UserType userType;

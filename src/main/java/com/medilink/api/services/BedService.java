@@ -1,6 +1,7 @@
 package com.medilink.api.services;
 
 import com.medilink.api.dto.bed.BedRequestDTO;
+import com.medilink.api.dto.patient.PatientResponseDTO;
 import com.medilink.api.enums.BedType;
 import com.medilink.api.models.Bed;
 import com.medilink.api.models.Patient;
@@ -44,9 +45,9 @@ public class BedService {
 
 
         if (bedRequestDTO.getPatientId() != null) {
-//            Patient patient = patientService.getPatient(bedRequestDTO.getPatientId());
-//            existingBed.setPatient(patient);
-//            existingBed.setStatus(BedType.RECEIVED);
+            PatientResponseDTO patient = patientService.getPatientById(bedRequestDTO.getPatientId());
+            existingBed.setPatient(patient);
+            existingBed.setStatus(BedType.RECEIVED);
         } else {
 
             existingBed.setPatient(null);
