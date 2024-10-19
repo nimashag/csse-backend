@@ -12,6 +12,7 @@ import java.util.Optional;
  */
 @Repository
 public interface DoctorRepository extends MongoRepository<Doctor, String> {
+    // This interface inherits all CRUD operations from MongoRepository. Additional methods can be added as needed.
 
     /**
      * Custom method to find doctors by hospital ID.
