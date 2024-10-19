@@ -12,5 +12,5 @@ public class ReceptionistRequestDTO {
     private String name;
     private String email;
     private String password;
-    private Hospital hospital;
+    private String allocatedHospitalId;
 }
