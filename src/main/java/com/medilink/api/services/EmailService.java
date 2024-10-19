@@ -1,6 +1,5 @@
 package com.medilink.api.services;
 
-import com.medilink.api.controllers.DoctorController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendWelcomeEmail(String toEmail, String doctorName, String password) {
+    public void sendDoctorWelcomeEmail(String toEmail, String doctorName, String password) {
         if (!isEmailEnabled) {
             logger.warn("[EMAIL] Email service is disabled. Skipping email send.");
             return; // Do not send the email if it's disabled in properties
@@ -51,6 +50,30 @@ public class EmailService {
         ));
 
         logger.info("[EMAIL] sending welcome email to: {}, email: {}", doctorName, toEmail);
+        mailSender.send(message);
+    }
+
+    public void sendHospitalWelcomeEmail(String toEmail, String hospitalName) {
+        if (!isEmailEnabled) {
+            logger.warn("[EMAIL] Email service is disabled. Skipping email send.");
+            return; // Do not send the email if it's disabled in properties
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        // If app is in testing mode, use the test email, otherwise use the provided email
+        if ("test".equalsIgnoreCase(appMode)) {
+            toEmail = testEmail;
+        }
+
+        message.setTo(toEmail);
+        message.setSubject("Welcome to MediLink!");
+        message.setText(String.format(
+                "Dear %s,\n\nWelcome to MediLink!\n\nThank you for registering your hospital with us!\n\nBest regards,\nThe MediLink Team",
+                hospitalName
+        ));
+
+        logger.info("[EMAIL] sending welcome email to hospital: {}, email: {}", hospitalName, toEmail);
         mailSender.send(message);
     }
 }
