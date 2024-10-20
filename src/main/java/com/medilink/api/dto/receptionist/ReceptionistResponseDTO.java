@@ -1,5 +1,6 @@
 package com.medilink.api.dto.receptionist;
 
+import com.medilink.api.enums.UserType;
 import com.medilink.api.models.Hospital;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,6 @@ public class ReceptionistResponseDTO {
     private String id;
     private String name;
     private String email;
-    private String password;
-    private Hospital hospital;
+    private UserType userType = UserType.RECEPTIONIST; // Automatically set to RECEPTIONIST
+    private String allocatedHospitalId;
 }

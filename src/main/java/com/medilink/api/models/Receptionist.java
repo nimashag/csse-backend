@@ -11,13 +11,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @ToString
 public class Receptionist extends User {
-    private Hospital hospital;
+    private String allocatedHospitalId;
+
     public Receptionist() {
         super.setUserType(UserType.RECEPTIONIST);
     }
 
-    public Receptionist(String id, String name, String email, String password, Hospital hospital) {
+    public Receptionist(String id, String name, String email, String password, String allocatedHospitalId) {
         super(id, name, email, password, UserType.RECEPTIONIST);
-        this.hospital = hospital;
+        this.allocatedHospitalId = allocatedHospitalId;
     }
 }

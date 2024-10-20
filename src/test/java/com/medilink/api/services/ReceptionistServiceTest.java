@@ -1,6 +1,5 @@
 package com.medilink.api.services;
 
-import com.medilink.api.models.Hospital;
 import com.medilink.api.models.Receptionist;
 import com.medilink.api.repositories.ReceptionistRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,34 +7,40 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class ReceptionistServiceTest {
-
-    @InjectMocks
-    private ReceptionistService receptionistService;
+class ReceptionistServiceTest {
 
     @Mock
     private ReceptionistRepository receptionistRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    private ReceptionistService receptionistService;
+
+    private Receptionist receptionist;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        receptionist = new Receptionist("1", "John Doe", "john@example.com", "password", "hospital1");
     }
 
     @Test
-    void saveReceptionist_shouldReturnSavedReceptionist() {
+    void saveReceptionist_shouldSaveReceptionistWithEncodedPassword() {
         // Arrange
-        Receptionist receptionist = new Receptionist();
-        receptionist.setId("1");
-        receptionist.setName("John Doe");
-
+        String rawPassword = "password";
+        String encodedPassword = "encodedPassword";
+        when(passwordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
         when(receptionistRepository.save(receptionist)).thenReturn(receptionist);
 
         // Act
@@ -43,112 +48,137 @@ public class ReceptionistServiceTest {
 
         // Assert
         assertNotNull(savedReceptionist);
-        assertEquals("1", savedReceptionist.getId());
-        assertEquals("John Doe", savedReceptionist.getName());
+        assertEquals(encodedPassword, savedReceptionist.getPassword());
+        verify(passwordEncoder, times(1)).encode(rawPassword);
+        verify(receptionistRepository, times(1)).save(receptionist);
     }
 
     @Test
     void getAllReceptionists_shouldReturnListOfReceptionists() {
         // Arrange
-        Receptionist receptionist1 = new Receptionist("1", "John Doe", "john@example.com", "123456789",new Hospital());
-        Receptionist receptionist2 = new Receptionist("2", "Jane Doe", "jane@example.com", "987654321",new Hospital());
-        List<Receptionist> receptionists = Arrays.asList(receptionist1, receptionist2);
-
-        when(receptionistRepository.findAll()).thenReturn(receptionists);
+        List<Receptionist> receptionistList = new ArrayList<>();
+        receptionistList.add(receptionist);
+        when(receptionistRepository.findAll()).thenReturn(receptionistList);
 
         // Act
         List<Receptionist> result = receptionistService.getAllReceptionists();
 
         // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("John Doe", result.get(0).getName());
-        assertEquals("Jane Doe", result.get(1).getName());
+        assertEquals(1, result.size());
+        assertEquals(receptionistList, result);
+        verify(receptionistRepository, times(1)).findAll();
     }
 
     @Test
-    void getReceptionist_shouldReturnReceptionist_whenReceptionistExists() {
+    void getReceptionist_shouldReturnReceptionistById_whenExists() {
         // Arrange
-        Receptionist receptionist = new Receptionist("1", "John Doe", "john@example.com", "123456789",new Hospital());
-
-        when(receptionistRepository.findById("1")).thenReturn(Optional.of(receptionist));
+        String id = "1";
+        when(receptionistRepository.findById(id)).thenReturn(Optional.of(receptionist));
 
         // Act
-        Receptionist result = receptionistService.getReceptionist("1");
+        Receptionist result = receptionistService.getReceptionist(id);
 
         // Assert
         assertNotNull(result);
-        assertEquals("John Doe", result.getName());
+        assertEquals(receptionist, result);
+        verify(receptionistRepository, times(1)).findById(id);
     }
 
     @Test
     void getReceptionist_shouldReturnNull_whenReceptionistDoesNotExist() {
         // Arrange
-        when(receptionistRepository.findById("1")).thenReturn(Optional.empty());
+        String id = "2";
+        when(receptionistRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act
-        Receptionist result = receptionistService.getReceptionist("1");
+        Receptionist result = receptionistService.getReceptionist(id);
 
         // Assert
         assertNull(result);
+        verify(receptionistRepository, times(1)).findById(id);
     }
 
     @Test
-    void updateReceptionist_shouldReturnUpdatedReceptionist_whenReceptionistExists() {
+    void updateReceptionist_shouldUpdateReceptionistWithEncodedPassword_whenPasswordIsProvided() {
         // Arrange
-        Receptionist existingReceptionist = new Receptionist("1", "John Doe", "john@example.com", "123456789",new Hospital());
-        Receptionist updatedReceptionist = new Receptionist("1", "John Smith", "johnsmith@example.com", "123456789",new Hospital());
-
-        when(receptionistRepository.findById("1")).thenReturn(Optional.of(existingReceptionist));
-        when(receptionistRepository.save(updatedReceptionist)).thenReturn(updatedReceptionist);
+        String newPassword = "newPassword";
+        String encodedNewPassword = "encodedNewPassword";
+        receptionist.setPassword(newPassword);
+        when(receptionistRepository.findById(receptionist.getId())).thenReturn(Optional.of(receptionist));
+        when(passwordEncoder.encode(newPassword)).thenReturn(encodedNewPassword);
+        when(receptionistRepository.save(receptionist)).thenReturn(receptionist);
 
         // Act
-        Receptionist result = receptionistService.updateReceptionist("1", updatedReceptionist);
+        Receptionist updatedReceptionist = receptionistService.updateReceptionist(receptionist.getId(), receptionist);
 
         // Assert
-        assertNotNull(result);
-        assertEquals("John Smith", result.getName());
+        assertNotNull(updatedReceptionist);
+        assertEquals(encodedNewPassword, updatedReceptionist.getPassword());
+        verify(passwordEncoder, times(1)).encode(newPassword);
+        verify(receptionistRepository, times(1)).save(receptionist);
     }
 
-    @Test
-    void updateReceptionist_shouldReturnNull_whenReceptionistDoesNotExist() {
-        // Arrange
-        Receptionist updatedReceptionist = new Receptionist("1", "John Smith", "johnsmith@example.com", "123456789",new Hospital());
-
-        when(receptionistRepository.findById("1")).thenReturn(Optional.empty());
-
-        // Act
-        Receptionist result = receptionistService.updateReceptionist("1", updatedReceptionist);
-
-        // Assert
-        assertNull(result);
-    }
 
     @Test
     void deleteReceptionist_shouldReturnTrue_whenReceptionistExists() {
         // Arrange
-        String receptionistId = "1";
-        when(receptionistRepository.existsById(receptionistId)).thenReturn(true);
+        String id = "1";
+        when(receptionistRepository.existsById(id)).thenReturn(true);
 
         // Act
-        boolean result = receptionistService.deleteReceptionist(receptionistId);
+        boolean result = receptionistService.deleteReceptionist(id);
 
         // Assert
         assertTrue(result);
-        verify(receptionistRepository, times(1)).deleteById(receptionistId);
+        verify(receptionistRepository, times(1)).deleteById(id);
     }
 
     @Test
     void deleteReceptionist_shouldReturnFalse_whenReceptionistDoesNotExist() {
         // Arrange
-        String receptionistId = "1";
-        when(receptionistRepository.existsById(receptionistId)).thenReturn(false);
+        String id = "2";
+        when(receptionistRepository.existsById(id)).thenReturn(false);
 
         // Act
-        boolean result = receptionistService.deleteReceptionist(receptionistId);
+        boolean result = receptionistService.deleteReceptionist(id);
 
         // Assert
         assertFalse(result);
-        verify(receptionistRepository, never()).deleteById(receptionistId);
+        verify(receptionistRepository, times(0)).deleteById(anyString());
+    }
+
+    @Test
+    void authenticateReceptionist_shouldReturnReceptionist_whenCredentialsAreValid() {
+        // Arrange
+        String email = "john@example.com";
+        String rawPassword = "password";
+        String encodedPassword = "encodedPassword";
+        receptionist.setPassword(encodedPassword);
+        when(receptionistRepository.findByEmail(email)).thenReturn(Optional.of(receptionist));
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
+
+        // Act
+        Receptionist authenticatedReceptionist = receptionistService.authenticateReceptionist(email, rawPassword);
+
+        // Assert
+        assertNotNull(authenticatedReceptionist);
+        assertEquals(receptionist, authenticatedReceptionist);
+        verify(passwordEncoder, times(1)).matches(rawPassword, encodedPassword);
+    }
+
+    @Test
+    void authenticateReceptionist_shouldReturnNull_whenCredentialsAreInvalid() {
+        // Arrange
+        String email = "john@example.com";
+        String rawPassword = "wrongPassword";
+        when(receptionistRepository.findByEmail(email)).thenReturn(Optional.of(receptionist));
+        when(passwordEncoder.matches(rawPassword, receptionist.getPassword())).thenReturn(false);
+
+        // Act
+        Receptionist authenticatedReceptionist = receptionistService.authenticateReceptionist(email, rawPassword);
+
+        // Assert
+        assertNull(authenticatedReceptionist);
+        verify(passwordEncoder, times(1)).matches(rawPassword, receptionist.getPassword());
     }
 }

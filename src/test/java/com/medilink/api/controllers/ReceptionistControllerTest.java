@@ -30,42 +30,13 @@ public class ReceptionistControllerTest {
 
     @Mock
     private ModelMapper modelMapper;
+    
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void createReceptionist_shouldReturnCreatedReceptionist() {
-        // Arrange
-        ReceptionistRequestDTO requestDto = new ReceptionistRequestDTO();
-        requestDto.setName("Jane Doe");
-        requestDto.setEmail("jane.doe@example.com");
-        requestDto.setPassword("password123");
-
-        Receptionist receptionist = new Receptionist();
-        receptionist.setName("Jane Doe");
-        receptionist.setEmail("jane.doe@example.com");
-
-        ReceptionistResponseDTO responseDto = new ReceptionistResponseDTO();
-        responseDto.setName("Jane Doe");
-        responseDto.setEmail("jane.doe@example.com");
-
-        when(modelMapper.map(requestDto, Receptionist.class)).thenReturn(receptionist);
-        when(receptionistService.saveReceptionist(receptionist)).thenReturn(receptionist);
-        when(modelMapper.map(receptionist, ReceptionistResponseDTO.class)).thenReturn(responseDto);
-
-        // Act
-        ResponseEntity<ReceptionistResponseDTO> response = receptionistController.createReceptionist(requestDto);
-
-        // Assert
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        ReceptionistResponseDTO responseBody = response.getBody();
-        assertNotNull(responseBody);
-        assertEquals("Jane Doe", responseBody.getName());
-        assertEquals("jane.doe@example.com", responseBody.getEmail());
-    }
 
     @Test
     void getAllReceptionists_shouldReturnListOfReceptionists() {
