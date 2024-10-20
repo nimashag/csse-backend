@@ -30,7 +30,6 @@ public class BedService {
             beds.add(bed);
         }
 
-
         return bedRepository.saveAll(beds);
     }
 
@@ -67,10 +66,14 @@ public class BedService {
         return bedRepository.save(existingBed);
     }
 
-    public void deleteBed(String id) {
+    public boolean deleteBed(String id) {
         if (bedRepository.existsById(id)) {
             bedRepository.deleteById(id);
+            return true; // Successful deletion
         }
+        return false; // Bed not found
     }
+
+
 
 }

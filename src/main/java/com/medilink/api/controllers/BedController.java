@@ -50,7 +50,12 @@ public class BedController {
     // Delete user by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBed(@PathVariable String id) {
-        bedService.deleteBed(id);
-        return null;
+        boolean isDeleted = bedService.deleteBed(id);
+
+        if (isDeleted) {
+            return ResponseEntity.noContent().build(); // Return 204 No Content
+        } else {
+            return ResponseEntity.notFound().build(); // Return 404 Not Found
+        }
     }
 }

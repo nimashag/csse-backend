@@ -3,7 +3,6 @@ package com.medilink.api.controllers;
 import com.medilink.api.dto.receptionist.ReceptionistRequestDTO;
 import com.medilink.api.dto.receptionist.ReceptionistResponseDTO;
 import com.medilink.api.models.Receptionist;
-import com.medilink.api.models.User;
 import com.medilink.api.services.ReceptionistService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,8 @@ public class ReceptionistController {
 
     @PostMapping("/create")
     public ResponseEntity<ReceptionistResponseDTO> createReceptionist(@RequestBody ReceptionistRequestDTO receptionistRequestDTO) {
-        Receptionist receptionist = modelMapper.map(receptionistService, Receptionist.class);
-        User savedReceptionist = receptionistService.saveReceptionist(receptionist);
+        Receptionist receptionist = modelMapper.map(receptionistRequestDTO, Receptionist.class);
+        Receptionist savedReceptionist = receptionistService.saveReceptionist(receptionist);
         ReceptionistResponseDTO receptionistResponseDTO = modelMapper.map(savedReceptionist, ReceptionistResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(receptionistResponseDTO);
     }
@@ -45,7 +44,7 @@ public class ReceptionistController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ReceptionistResponseDTO> getReceptionistById(@PathVariable("id") String id) {
-        User receptionist = receptionistService.getReceptionist(id);
+        Receptionist receptionist = receptionistService.getReceptionist(id);
         if (receptionist == null) {
             return ResponseEntity.notFound().build();
         }
