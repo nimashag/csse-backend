@@ -20,6 +20,7 @@ public class BedService {
     @Autowired
     private PatientService patientService;
 
+    //create beds
     public List<Bed> createBeds(String wardId, int numberOfBeds) {
         List<Bed> beds = new ArrayList<>();
 
@@ -33,10 +34,12 @@ public class BedService {
         return bedRepository.saveAll(beds);
     }
 
+    //find beds assigned for a ward
     public List<Bed> findBedsByWardId(String wardId) {
         return bedRepository.findByWardId(wardId);
     }
 
+    //update bed
     public Bed updateBed(BedRequestDTO bedRequestDTO) {
 
         Bed existingBed = bedRepository.findById(bedRequestDTO.getBedId())
@@ -56,6 +59,7 @@ public class BedService {
         return bedRepository.save(existingBed);
     }
 
+    //empty bed
     public Bed emptyBed(String id) {
         Bed existingBed = bedRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Bed not found"));
@@ -66,6 +70,7 @@ public class BedService {
         return bedRepository.save(existingBed);
     }
 
+    // delete bed
     public boolean deleteBed(String id) {
         if (bedRepository.existsById(id)) {
             bedRepository.deleteById(id);

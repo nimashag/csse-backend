@@ -30,6 +30,7 @@ public class ClinicService {
     @Autowired
     private PatientRepository patientRepository;
 
+    //create clinic
     public Clinic saveClinic(ClinicRequestDTO clinicRequestDTO) {
 
         // Fetch doctor and hospital by their IDs
@@ -49,7 +50,7 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
-
+    //add patient to clinic
     public Clinic addPatientToClinic(String clinicId, String patientId) {
 
         Clinic clinic = clinicRepository.findById(clinicId)
@@ -73,14 +74,17 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
+    //get all clinics
     public List<Clinic> getClinics() {
         return clinicRepository.findAll();
     }
 
+    //get one clinic by the Id
     public Clinic getOneClinic(String id){
         return clinicRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Clinic not found"));
     }
 
+    //get all clinics assigned to the patient
     public List<Clinic> getClinicsByPatientId(String patientId) {
         List<Clinic> allClinics = clinicRepository.findAll();
         // Filter clinics where the patient list contains the given patient ID
@@ -90,6 +94,7 @@ public class ClinicService {
                 .collect(Collectors.toList());
     }
 
+    //delete clinic
     public void deleteClinic(String id) {
         clinicRepository.deleteById(id);
     }
